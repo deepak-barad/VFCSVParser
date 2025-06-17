@@ -2,7 +2,8 @@ package com.dbarad.presentation.csvparser.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dbarad.domain.csvparser.models.DeviceDetails
+import com.dbarad.core.csvparser.common.Result
+import com.dbarad.domain.csvparser.models.ParsedData
 import com.dbarad.domain.csvparser.usecases.ParseDeviceReportUseCase
 import com.dbarad.presentation.csvparser.viewstates.ParseViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,17 +23,19 @@ class ParserViewModel @Inject constructor(private val parseDeviceReportUseCase: 
         viewModelScope.launch {
             parseDeviceReportUseCase(csv).collect { result ->
                 when (result) {
-                    is com.dbarad.core.csvparser.common.Result.Error -> {
+                    is Result.Error -> {
 
                     }
 
-                    is com.dbarad.core.csvparser.common.Result.Loading -> {
-
-                    }
-
-                    is com.dbarad.core.csvparser.common.Result.Success<*> -> {
+                    is Result.Loading -> {
                         _parserViewState.update {
-                            ParseViewState.Success(result.data as DeviceDetails)
+                            ParseViewState.Loading
+                        }
+                    }
+
+                    is Result.Success<*> -> {
+                        _parserViewState.update {
+                            ParseViewState.Success(result.data as ParsedData)
                         }
                     }
                 }

@@ -19,9 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.dbarad.core.csvparser.common.ERROR
+import com.dbarad.core.csvparser.common.JSON_OUTPUT
+import com.dbarad.core.csvparser.common.PARSE
+import com.dbarad.core.csvparser.common.PASTE_CSV_DATA_HERE
+import com.dbarad.core.csvparser.common.TOTAL_RECORDS_PROCESSED
 import com.dbarad.core.csvparser.extensions.toJson
 import com.dbarad.presentation.csvparser.viewmodels.ParserViewModel
 import com.dbarad.presentation.csvparser.viewstates.ParseViewState
+
 
 @Composable
 fun ParserScreen(viewModel: ParserViewModel = hiltViewModel()) {
@@ -34,7 +40,7 @@ fun ParserScreen(viewModel: ParserViewModel = hiltViewModel()) {
             OutlinedTextField(
                 value = input,
                 onValueChange = { input = it },
-                label = { Text("Paste CSV data here") },
+                label = { Text(PASTE_CSV_DATA_HERE) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -44,30 +50,35 @@ fun ParserScreen(viewModel: ParserViewModel = hiltViewModel()) {
                 try {
                     viewModel.parseInput(input)
                 } catch (e: Exception) {
-                    output = "Error: ${e.message}"
+                    output = "$ERROR ${e.message}"
                 }
             }) {
-                Text("Parse")
+                Text(PARSE)
             }
             Spacer(Modifier.height(8.dp))
-            Text(modifier = Modifier.padding(16.dp), text = "Json output:")
+            Text(modifier = Modifier.padding(16.dp), text = JSON_OUTPUT)
         }
         item {
             when (parserViewState) {
-                ParseViewState.DoNothing -> {
-
-                }
-
                 ParseViewState.Loading -> {
-                    CircularProgressIndicator(color = Color.Blue)
+                    CircularProgressIndicator(
+                        color = Color.Blue,
+                        modifier = Modifier.padding(16.dp)
+                    )
                 }
 
                 is ParseViewState.Success -> {
                     Text(
                         modifier = Modifier.padding(16.dp),
-                        text = (parserViewState as ParseViewState.Success).deviceDetails.toJson()
+                        text = """$TOTAL_RECORDS_PROCESSED ${(parserViewState as ParseViewState.Success).parsedData.deviceDetails.deviceLines.size}"""
+                    )
+                    Text(
+                        modifier = Modifier.padding(16.dp),
+                        text = (parserViewState as ParseViewState.Success).parsedData.toJson()
                     )
                 }
+
+                else -> Unit
             }
         }
     }

@@ -4,17 +4,43 @@ import com.dbarad.core.csvparser.common.Result
 import com.dbarad.data.csvparser.repository.CsvDeviceParserRepository
 import com.dbarad.domain.csvparser.models.DeviceDetails
 import com.dbarad.domain.csvparser.models.DeviceLine
+import com.dbarad.domain.csvparser.models.ParsedData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 import com.dbarad.data.csvparser.models.DeviceDetails as DataDeviceDetails
 
 class ParseDeviceReportUseCase @Inject constructor(private val parser: CsvDeviceParserRepository) {
-    operator fun invoke(csv: String): Flow<Result<DeviceDetails>> = flow {
-        emit(Result.Success(toDomainModel(parser.parse(csv))))
-    }
+    operator fun invoke(csv: String): Flow<Result<ParsedData>> =
+        parser.parse(csv)
+            .onStart {
+                emit(Result.Loading)
+                delay(100)
+            }.flowOn(Dispatchers.IO)
+            .map { result ->
+                when (result) {
+                    is Result.Success -> {
+                        delay(10000)
+                        Result.Success(toDomainModel(result.data))
+                    }
 
-    private fun toDomainModel(dataDeviceDetails: DataDeviceDetails): DeviceDetails {
+                    is Result.Error -> {
+                        Result.Error(result.exception)
+                    }
+
+                    else -> Result.Loading
+                }
+            }.catch {
+                emit(Result.Error(it))
+            }
+
+
+    private fun toDomainModel(dataDeviceDetails: DataDeviceDetails): ParsedData {
         val deviceDetails = DeviceDetails(
             dataDeviceDetails.serverID,
             dataDeviceDetails.deviceLines.map {
@@ -25,6 +51,6 @@ class ParseDeviceReportUseCase @Inject constructor(private val parser: CsvDevice
                     it.deviceName
                 )
             })
-        return deviceDetails
+        return ParsedData(deviceDetails)
     }
 }
