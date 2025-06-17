@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
@@ -27,40 +28,44 @@ fun ParserScreen(viewModel: ParserViewModel = hiltViewModel()) {
     var output by remember { mutableStateOf("") }
     val parserViewState by viewModel.parserViewState.collectAsState()
 
-    OutlinedTextField(
-        value = input,
-        onValueChange = { input = it },
-        label = { Text("Input CSV") },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    )
-    Spacer(Modifier.height(8.dp))
-    Button(modifier = Modifier.padding(16.dp), onClick = {
-        try {
-            viewModel.parseInput(input)
-        } catch (e: Exception) {
-            output = "Error: ${e.message}"
+    LazyColumn {
+        item {
+            OutlinedTextField(
+                value = input,
+                onValueChange = { input = it },
+                label = { Text("Paste CSV data here") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
+            Spacer(Modifier.height(8.dp))
+            Button(modifier = Modifier.padding(16.dp), onClick = {
+                try {
+                    viewModel.parseInput(input)
+                } catch (e: Exception) {
+                    output = "Error: ${e.message}"
+                }
+            }) {
+                Text("Parse")
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(modifier = Modifier.padding(16.dp), text = "Json output:")
         }
-    }) {
-        Text("Parse")
-    }
-    Spacer(Modifier.height(8.dp))
-    Text(modifier = Modifier.padding(16.dp), text = "Json output:")
+        item {
+            when (parserViewState) {
+                ParseViewState.DoNothing -> {
 
+                }
 
-    when (parserViewState) {
-        ParseViewState.DoNothing -> {
+                ParseViewState.Loading -> {
+                    CircularProgressIndicator(color = Color.Blue)
+                }
 
-        }
-
-        ParseViewState.Loading -> {
-            CircularProgressIndicator(color = Color.Blue)
-        }
-
-        is ParseViewState.Success -> {
-            output = parserViewState.toString()
-            Text(modifier = Modifier.padding(16.dp), text = output)
+                is ParseViewState.Success -> {
+                    output = parserViewState.toString()
+                    Text(modifier = Modifier.padding(16.dp), text = output)
+                }
+            }
         }
     }
 }
