@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.dbarad.core.csvparser.extensions.toJson
 import com.dbarad.presentation.csvparser.viewmodels.ParserViewModel
 import com.dbarad.presentation.csvparser.viewstates.ParseViewState
 
@@ -62,8 +63,10 @@ fun ParserScreen(viewModel: ParserViewModel = hiltViewModel()) {
                 }
 
                 is ParseViewState.Success -> {
-                    output = parserViewState.toString()
-                    Text(modifier = Modifier.padding(16.dp), text = output)
+                    Text(
+                        modifier = Modifier.padding(16.dp),
+                        text = (parserViewState as ParseViewState.Success).deviceDetails.toJson()
+                    )
                 }
             }
         }
