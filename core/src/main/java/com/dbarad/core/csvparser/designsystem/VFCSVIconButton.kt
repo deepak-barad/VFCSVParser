@@ -5,6 +5,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.dbarad.core.csvparser.common.COPY_OUTPUT
 
 @Composable
 fun VFCSVIconButton(modifier: Modifier = Modifier, onClick: () -> Unit, imageVector: ImageVector) {
@@ -13,7 +14,7 @@ fun VFCSVIconButton(modifier: Modifier = Modifier, onClick: () -> Unit, imageVec
     }) {
         Icon(
             imageVector = imageVector,
-            contentDescription = "Copy output"
+            contentDescription = COPY_OUTPUT
         )
     }
 }
