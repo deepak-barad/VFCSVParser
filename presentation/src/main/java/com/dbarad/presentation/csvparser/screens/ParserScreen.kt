@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.dbarad.core.csvparser.common.CLEAR
+import com.dbarad.core.csvparser.common.EMPTY_STRING
 import com.dbarad.core.csvparser.common.ERROR
 import com.dbarad.core.csvparser.common.JSON_OUTPUT
 import com.dbarad.core.csvparser.common.PARSE
@@ -69,20 +70,27 @@ fun ParserScreen(viewModel: ParserViewModel = hiltViewModel()) {
                         .height(200.dp)
                         .padding(16.dp)
                 )
-                Spacer(Modifier.height(8.dp))
-                VFCSVButton(
-                    modifier = Modifier.padding(16.dp),
-                    onClick = {
-                        try {
-                            viewModel.parseInput(input)
-                        } catch (e: Exception) {
-                            output = "$ERROR ${e.message}"
-                        }
-                    },
-                    text = PARSE
-                )
-                Spacer(Modifier.height(8.dp))
-                //VFCSVText(modifier = Modifier.padding(16.dp), text = JSON_OUTPUT)
+                Row {
+                    VFCSVButton(
+                        modifier = Modifier.padding(16.dp),
+                        onClick = {
+                            try {
+                                viewModel.parseInput(input)
+                            } catch (e: Exception) {
+                                output = "$ERROR ${e.message}"
+                            }
+                        },
+                        text = PARSE
+                    )
+
+                    VFCSVButton(
+                        modifier = Modifier.padding(16.dp),
+                        onClick = {
+                            input = EMPTY_STRING
+                        },
+                        text = CLEAR
+                    )
+                }
             }
             item {
                 when (parserViewState) {
