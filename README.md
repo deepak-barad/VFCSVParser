@@ -1,3 +1,10 @@
+**HLD**
+
+[VFCSVParser_HLD.docx](https://github.com/user-attachments/files/20799869/VFCSVParser_HLD.docx)
+[VFCSVParser_HLD.docx](https://github.com/user-attachments/files/20799869/VFCSVParser_HLD.docx)
+[VFCSVParser_HLD.docx](https://github.com/user-attachments/files/20799869/VFCSVParser_HLD.docx)
+
+
 **Sequence Diagram**
 
 https://lucid.app/lucidchart/aed98821-5017-4c12-9675-d467cf580e80/view
