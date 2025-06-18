@@ -20,12 +20,11 @@ class ParseDeviceReportUseCase @Inject constructor(private val parser: CsvDevice
         parser.parse(csv)
             .onStart {
                 emit(Result.Loading)
-                delay(100)
             }.flowOn(Dispatchers.IO)
             .map { result ->
                 when (result) {
                     is Result.Success -> {
-                        delay(100)
+                        delay(500) //intentionally added delay to show loading state
                         Result.Success(toDomainModel(result.data))
                     }
 

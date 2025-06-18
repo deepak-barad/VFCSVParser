@@ -2,6 +2,7 @@ package com.dbarad.presentation.csvparser.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dbarad.core.csvparser.common.EMPTY_STRING
 import com.dbarad.core.csvparser.common.Result
 import com.dbarad.core.csvparser.common.SOMETHING_WENT_WRONG_OR_WRONG_INPUT
 import com.dbarad.core.csvparser.extensions.toJson
@@ -22,7 +23,7 @@ class ParserViewModel @Inject constructor(private val parseDeviceReportUseCase: 
     private val _parserViewState = MutableStateFlow<ParseViewState>(ParseViewState.DoNothing)
     val parserViewState = _parserViewState.asStateFlow()
 
-    private val _clipboardData = MutableStateFlow<String>("")
+    private val _clipboardData = MutableStateFlow<String>(EMPTY_STRING)
     val clipboardData = _clipboardData.asStateFlow()
 
     private val _canCopyToClipboard = MutableStateFlow<Boolean>(false)
@@ -54,12 +55,12 @@ class ParserViewModel @Inject constructor(private val parseDeviceReportUseCase: 
         }
     }
 
-    fun reset() {
+    private fun reset() {
         _canCopyToClipboard.update {
             false
         }
         _clipboardData.update { _ ->
-            ""
+            EMPTY_STRING
         }
     }
 
