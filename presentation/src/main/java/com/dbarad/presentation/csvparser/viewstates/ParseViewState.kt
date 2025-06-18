@@ -6,4 +6,5 @@ sealed interface ParseViewState {
     data object Loading : ParseViewState
     data object DoNothing : ParseViewState
     data class Success(val parsedData: ParsedData) : ParseViewState
+    data class Error(val message: String) : ParseViewState
 }

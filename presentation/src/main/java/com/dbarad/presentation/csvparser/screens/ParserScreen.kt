@@ -78,6 +78,13 @@ fun ParserScreen(viewModel: ParserViewModel = hiltViewModel()) {
                     )
                 }
 
+                is ParseViewState.Error -> {
+                    Text(
+                        modifier = Modifier.padding(16.dp),
+                        text = (parserViewState as ParseViewState.Error).message
+                    )
+                }
+
                 else -> Unit
             }
         }

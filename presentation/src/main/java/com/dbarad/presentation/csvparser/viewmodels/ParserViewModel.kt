@@ -3,6 +3,7 @@ package com.dbarad.presentation.csvparser.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dbarad.core.csvparser.common.Result
+import com.dbarad.core.csvparser.common.SOMETHING_WENT_WRONG_OR_WRONG_INPUT
 import com.dbarad.domain.csvparser.models.ParsedData
 import com.dbarad.domain.csvparser.usecases.ParseDeviceReportUseCase
 import com.dbarad.presentation.csvparser.viewstates.ParseViewState
@@ -24,7 +25,9 @@ class ParserViewModel @Inject constructor(private val parseDeviceReportUseCase: 
             parseDeviceReportUseCase(csv).collect { result ->
                 when (result) {
                     is Result.Error -> {
-
+                        _parserViewState.update {
+                            ParseViewState.Error(SOMETHING_WENT_WRONG_OR_WRONG_INPUT)
+                        }
                     }
 
                     is Result.Loading -> {
