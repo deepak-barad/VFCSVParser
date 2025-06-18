@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +23,7 @@ import com.dbarad.core.csvparser.common.JSON_OUTPUT
 import com.dbarad.core.csvparser.common.PARSE
 import com.dbarad.core.csvparser.common.PASTE_CSV_DATA_HERE
 import com.dbarad.core.csvparser.common.TOTAL_RECORDS_PROCESSED
+import com.dbarad.core.csvparser.designsystem.VFCSVButton
 import com.dbarad.core.csvparser.designsystem.VFCSVCircularProgressIndicator
 import com.dbarad.core.csvparser.extensions.toJson
 import com.dbarad.presentation.csvparser.viewmodels.ParserViewModel
@@ -47,15 +47,17 @@ fun ParserScreen(viewModel: ParserViewModel = hiltViewModel()) {
                         .padding(16.dp)
                 )
                 Spacer(Modifier.height(8.dp))
-                Button(modifier = Modifier.padding(16.dp), onClick = {
-                    try {
-                        viewModel.parseInput(input)
-                    } catch (e: Exception) {
-                        output = "$ERROR ${e.message}"
-                    }
-                }) {
-                    Text(PARSE)
-                }
+                VFCSVButton(
+                    modifier = Modifier.padding(16.dp),
+                    onClick = {
+                        try {
+                            viewModel.parseInput(input)
+                        } catch (e: Exception) {
+                            output = "$ERROR ${e.message}"
+                        }
+                    },
+                    text = PARSE
+                )
                 Spacer(Modifier.height(8.dp))
                 Text(modifier = Modifier.padding(16.dp), text = JSON_OUTPUT)
             }
