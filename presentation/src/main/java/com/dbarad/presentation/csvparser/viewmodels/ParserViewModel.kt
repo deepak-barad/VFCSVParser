@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dbarad.core.csvparser.common.Result
 import com.dbarad.core.csvparser.common.SOMETHING_WENT_WRONG_OR_WRONG_INPUT
+import com.dbarad.core.csvparser.extensions.toJson
 import com.dbarad.domain.csvparser.models.ParsedData
 import com.dbarad.domain.csvparser.usecases.ParseDeviceReportUseCase
 import com.dbarad.presentation.csvparser.viewstates.ParseViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -19,6 +21,12 @@ class ParserViewModel @Inject constructor(private val parseDeviceReportUseCase: 
     ViewModel() {
     private val _parserViewState = MutableStateFlow<ParseViewState>(ParseViewState.DoNothing)
     val parserViewState = _parserViewState.asStateFlow()
+
+    private val _clipboardData = MutableStateFlow<String>("")
+    val clipboardData = _clipboardData.asStateFlow()
+
+    private val _canCopyToClipboard = MutableStateFlow<Boolean>(false)
+    val canCopyToClipboard = _canCopyToClipboard.asStateFlow()
 
     fun parseInput(csv: String) {
         viewModelScope.launch {
@@ -43,6 +51,32 @@ class ParserViewModel @Inject constructor(private val parseDeviceReportUseCase: 
                     }
                 }
             }
+        }
+    }
+
+    fun reset() {
+        _canCopyToClipboard.update {
+            false
+        }
+        _clipboardData.update { _ ->
+            ""
+        }
+    }
+
+    fun copyOutput() {
+        viewModelScope.launch {
+            _parserViewState.value.let {
+                if (it is ParseViewState.Success) {
+                    _clipboardData.update { _ ->
+                        it.parsedData.deviceDetails.toJson()
+                    }
+                    _canCopyToClipboard.update {
+                        true
+                    }
+                }
+            }
+            delay(2000)
+            reset()
         }
     }
 }
