@@ -19,13 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dbarad.core.csvparser.common.ERROR
-import com.dbarad.core.csvparser.common.JSON_OUTPUT
 import com.dbarad.core.csvparser.common.PARSE
 import com.dbarad.core.csvparser.common.PASTE_CSV_DATA_HERE
 import com.dbarad.core.csvparser.common.TOTAL_RECORDS_PROCESSED
 import com.dbarad.core.csvparser.designsystem.VFCSVButton
 import com.dbarad.core.csvparser.designsystem.VFCSVCircularProgressIndicator
+import com.dbarad.core.csvparser.designsystem.VFCSVDisplayCard
 import com.dbarad.core.csvparser.designsystem.VFCSVText
+import com.dbarad.core.csvparser.designsystem.VFCSVTextBold
 import com.dbarad.core.csvparser.extensions.toJson
 import com.dbarad.presentation.csvparser.viewmodels.ParserViewModel
 import com.dbarad.presentation.csvparser.viewstates.ParseViewState
@@ -45,6 +46,7 @@ fun ParserScreen(viewModel: ParserViewModel = hiltViewModel()) {
                     label = { Text(PASTE_CSV_DATA_HERE) },
                     modifier = Modifier
                         .fillMaxWidth()
+                        .height(200.dp)
                         .padding(16.dp)
                 )
                 Spacer(Modifier.height(8.dp))
@@ -60,19 +62,24 @@ fun ParserScreen(viewModel: ParserViewModel = hiltViewModel()) {
                     text = PARSE
                 )
                 Spacer(Modifier.height(8.dp))
-                VFCSVText(modifier = Modifier.padding(16.dp), text = JSON_OUTPUT)
+                //VFCSVText(modifier = Modifier.padding(16.dp), text = JSON_OUTPUT)
             }
             item {
                 when (parserViewState) {
                     is ParseViewState.Success -> {
-                        VFCSVText(
-                            modifier = Modifier.padding(16.dp),
-                            text = """$TOTAL_RECORDS_PROCESSED ${(parserViewState as ParseViewState.Success).parsedData.deviceDetails.deviceLines.size}"""
-                        )
-                        VFCSVText(
-                            modifier = Modifier.padding(16.dp),
-                            text = (parserViewState as ParseViewState.Success).parsedData.toJson()
-                        )
+                        VFCSVDisplayCard {
+                            VFCSVTextBold(
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .fillMaxWidth(),
+                                text = """$TOTAL_RECORDS_PROCESSED ${(parserViewState as ParseViewState.Success).parsedData.deviceDetails.deviceLines.size}""",
+                                isCenterAligned = true
+                            )
+                            VFCSVText(
+                                modifier = Modifier.padding(16.dp),
+                                text = (parserViewState as ParseViewState.Success).parsedData.toJson()
+                            )
+                        }
                     }
 
                     is ParseViewState.Error -> {

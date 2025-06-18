@@ -25,7 +25,7 @@ class ParseDeviceReportUseCase @Inject constructor(private val parser: CsvDevice
             .map { result ->
                 when (result) {
                     is Result.Success -> {
-                        delay(10000)
+                        delay(1000)
                         Result.Success(toDomainModel(result.data))
                     }
 
