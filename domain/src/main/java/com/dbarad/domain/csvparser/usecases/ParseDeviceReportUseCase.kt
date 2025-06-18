@@ -15,9 +15,9 @@ import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 import com.dbarad.data.csvparser.models.DeviceDetails as DataDeviceDetails
 
-class ParseDeviceReportUseCase @Inject constructor(private val parser: CsvDeviceParserRepository) {
+class ParseDeviceReportUseCase @Inject constructor(private val csvDeviceParserRepository: CsvDeviceParserRepository) {
     operator fun invoke(csv: String): Flow<Result<ParsedData>> =
-        parser.parse(csv)
+        csvDeviceParserRepository.parse(csv)
             .onStart {
                 emit(Result.Loading)
             }.flowOn(Dispatchers.IO)
@@ -38,7 +38,9 @@ class ParseDeviceReportUseCase @Inject constructor(private val parser: CsvDevice
                 emit(Result.Error(it))
             }
 
-
+    /**
+     * Transform data model to domain model
+     */
     private fun toDomainModel(dataDeviceDetails: DataDeviceDetails): ParsedData {
         val deviceDetails = DeviceDetails(
             dataDeviceDetails.serverID,

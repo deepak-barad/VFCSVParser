@@ -52,7 +52,7 @@ fun ParserScreen(viewModel: ParserViewModel = hiltViewModel()) {
 
     when (canCopyToClipboard) {
         true -> {
-            CopyOutput(clipboardData, canCopyToClipboard)
+            CopyOutput(clipboardData)
         }
 
         false -> Unit
@@ -142,7 +142,7 @@ fun ParserScreen(viewModel: ParserViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun CopyOutput(value: String, canCopyToClipboard: Boolean) {
+private fun CopyOutput(value: String) {
     val clipboard =
         LocalContext.current.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clipData = ClipData.newPlainText(JSON_OUTPUT, value)
