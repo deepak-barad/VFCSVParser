@@ -25,6 +25,7 @@ import com.dbarad.core.csvparser.common.PASTE_CSV_DATA_HERE
 import com.dbarad.core.csvparser.common.TOTAL_RECORDS_PROCESSED
 import com.dbarad.core.csvparser.designsystem.VFCSVButton
 import com.dbarad.core.csvparser.designsystem.VFCSVCircularProgressIndicator
+import com.dbarad.core.csvparser.designsystem.VFCSVText
 import com.dbarad.core.csvparser.extensions.toJson
 import com.dbarad.presentation.csvparser.viewmodels.ParserViewModel
 import com.dbarad.presentation.csvparser.viewstates.ParseViewState
@@ -59,23 +60,23 @@ fun ParserScreen(viewModel: ParserViewModel = hiltViewModel()) {
                     text = PARSE
                 )
                 Spacer(Modifier.height(8.dp))
-                Text(modifier = Modifier.padding(16.dp), text = JSON_OUTPUT)
+                VFCSVText(modifier = Modifier.padding(16.dp), text = JSON_OUTPUT)
             }
             item {
                 when (parserViewState) {
                     is ParseViewState.Success -> {
-                        Text(
+                        VFCSVText(
                             modifier = Modifier.padding(16.dp),
                             text = """$TOTAL_RECORDS_PROCESSED ${(parserViewState as ParseViewState.Success).parsedData.deviceDetails.deviceLines.size}"""
                         )
-                        Text(
+                        VFCSVText(
                             modifier = Modifier.padding(16.dp),
                             text = (parserViewState as ParseViewState.Success).parsedData.toJson()
                         )
                     }
 
                     is ParseViewState.Error -> {
-                        Text(
+                        VFCSVText(
                             modifier = Modifier.padding(16.dp),
                             text = (parserViewState as ParseViewState.Error).message
                         )
