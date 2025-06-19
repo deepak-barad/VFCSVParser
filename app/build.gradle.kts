@@ -46,8 +46,6 @@ android {
 dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.android)
-    implementation(project(":domain"))
-    implementation(project(":data"))
     implementation(project(":presentation"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
